@@ -1,0 +1,22 @@
+{
+  "name": "sync-chord",
+  "version": "1.0.0",
+  "description": "Chord algorithm (lab work)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wWrongName/Sync-Chord.git"
+  },
+  "keywords": [
+    "chord"
+  ],
+  "author": "wWrongName",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wWrongName/Sync-Chord/issues"
+  },
+  "homepage": "https://github.com/wWrongName/Sync-Chord#readme"
+}
