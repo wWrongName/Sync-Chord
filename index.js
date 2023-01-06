@@ -13,6 +13,16 @@ console.info(`Init config: ${JSON.stringify(config)}`)
 class ChordCLI {
     constructor(config) {
         this.cmdModel = {
+            update : {
+                mnemonic : ["upd", "u"],
+                action : this.updateChord.bind(this),
+                description : "Update chord"
+            },
+            traceRoute : {
+                mnemonic : ["ping", "p"],
+                action : this.traceRoute.bind(this),
+                description : "Recursively send message. [fromId, toId]"
+            },  
             exit : {
                 mnemonic : ["exit", "e"],
                 action : this.exit.bind(this),
@@ -31,7 +41,7 @@ class ChordCLI {
             disconnect : {
                 mnemonic : ["disconnect", "d"],
                 action : this.disconnect.bind(this),
-                description : "Disconnect a peer from the chord model"
+                description : "Disconnect a peer from the chord model. [nodeId]"
             },
             status : {
                 mnemonic : ["status", "s"],
@@ -47,6 +57,15 @@ class ChordCLI {
         })
     }
 
+    updateChord() {
+        this.chordModel.realUpdNetwork()
+    }
+
+    traceRoute(inputs) {
+        let [sourceId, destinationId] = inputs
+        this.chordModel.traceRouteInterface(sourceId, destinationId)
+    }
+
     exit() {
         process.exit(0)
     }
@@ -59,12 +78,13 @@ class ChordCLI {
         })
     }
 
-    connect() {
-        this.chordModel.connectNode()
+    connect(inputs) {
+        let [newClientId, trustedId] = inputs 
+        this.chordModel.realConnection(newClientId, trustedId)
     }
 
     disconnect(id) {
-            this.chordModel.disconnectNode(id)
+        this.chordModel.realDisconnection(id[0])
     }
 
     status() {
@@ -81,8 +101,8 @@ class ChordCLI {
             return prev
         }, undefined)
         try {
-            if (input.length === 2)
-                command.action(input[1])
+            if (input.length > 1) 
+                command.action(input.slice(1))
             else
                 command.action()
         } catch (e) {
