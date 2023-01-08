@@ -89,7 +89,7 @@ class ChordModel {
         newClientNode.active = true
         newClientNode.successor = successor
         newClientNode.predecessor = this.getNodeById(successor).predecessor
-        newClientNode.fingers = [0, 0, 0]
+        newClientNode.fingers = [null, null, null]
         this.notify(successor, newClientId)
         this.realUpdNetwork()
     }
@@ -106,11 +106,12 @@ class ChordModel {
     }
 
     trueFixFingers(node) {
-        for (let i in node.fingers)
+        for (let i in node.fingers) {
             node.fingers[i] = this.findRealSuccessor(
                 this.mod(node.id + Math.pow(2, i)),
                 node
             )
+        }
     }
 
     stabilize(node) {
@@ -134,10 +135,15 @@ class ChordModel {
         console.trace(
             `Find successor for node ${clientId} by ${trustedNode.id}`
         )
+        if (clientId == 5 && trustedNode.id == 3)
+            console.log(clientId, [
+                trustedNode.id,
+                this.mod(trustedNode.successor + 1),
+            ], Number(trustedNode.successor) + 1, this.mod(Number(trustedNode.successor) + 1))
         if (
             this.idInCircleRange(clientId, [
                 trustedNode.id,
-                this.mod(trustedNode.successor + 1),
+                this.mod(Number(trustedNode.successor) + 1),
             ])
         ) {
             console.trace(
@@ -152,16 +158,21 @@ class ChordModel {
     }
 
     closestPrecedingNode(clientId, trustedNode) {
-        for (let fIndex = this.config.addrSize - 1; fIndex > -1; fIndex--) {
+        /*for (let fIndex = this.config.addrSize - 1; fIndex > -1; fIndex--) {
+            console.log(trustedNode.fingers, fIndex, trustedNode)
             let finger = trustedNode.fingers[fIndex]
-            if (this.idInCircleRange(finger, [trustedNode.id, clientId]))
+            let fNode = this.getNodeById(finger)
+            if (fNode && fNode.active && this.idInCircleRange(finger, [trustedNode.id, clientId]))
                 return this.getNodeById(finger)
-        }
-        return trustedNode
+        }*/
+        return this.getNodeById(trustedNode.predecessor)
     }
 
     idInCircleRange(id, range) {
         let [from, to] = range
+        if (from == 3 && to == 4 && id == 5) {
+            console.log(id > from && id < to)
+        }
         if (from > to) return (id > from && id < 8) || (id > -1 && id < to)
         else return id > from && id < to
     }
